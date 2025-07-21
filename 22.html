@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日回憶錄 - 獻給最特別的你</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* 登入頁面樣式 */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ff4757;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* 主網站樣式 */
+        .main-website {
+            display: none;
+        }
+
+        .main-website.active {
+            display: block;
+        }
+
+        /* 導航欄樣式 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 15px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-name {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #ff3742;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-menu li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #667eea;
+        }
+
+        /* 頁面容器 */
+        .page-container {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 首頁樣式 */
+        .header {
+            text-align: center;
+            padding: 60px 0;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .cta-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* 通用區塊樣式 */
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: clamp(20px, 4vw, 40px);
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            margin-bottom: 30px;
+            color: #667eea;
+        }
+
+        /* 照片展示樣式 */
+        .photo1-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .photo1-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            aspect-ratio: 4/3;
+        }
+
+        .photo1-item:hover {
+            transform: translateY(-5px);
+        }
+
+            .photo1-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .photo1-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .photo1-item:hover .photo1-caption {
+            transform: translateY(0);
+        }
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .photo-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            aspect-ratio: 4/3;
+        }
+
+        .photo-item:hover {
+            transform: translateY(-5px);
+        }
+
+            .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .photo-item:hover .photo-caption {
+            transform: translateY(0);
+        }
+
+
+        /* 時光軸樣式 */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #667eea;
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin: 30px 0;
+            width: 45%;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 55%;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            right: -20px;
+            border-left-color: white;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            left: -20px;
+            border-right-color: white;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        /* 祝福樣式 */
+        
+
+        .birthday-wish {
+            text-align: center;
+            background: linear-gradient(135deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: clamp(30px, 5vw, 50px);
+            border-radius: 20px;
+            margin: 30px 0;
+        }
+
+        .birthday-wish h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 20px;
+        }
+
+        .birthday-wish p {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .heart {
+            color: #ff4757;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* 飄浮愛心 */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart-particle {
+            position: absolute;
+            color: rgba(255, 71, 87, 0.3);
+            font-size: 20px;
+            animation: float 6s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 50px;
+                transition: left 0.3s ease;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu li {
+                margin: 15px 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                left: 0 !important;
+                padding-left: 50px;
+            }
+
+            .timeline-content::before {
+                left: -20px !important;
+                border-right-color: white !important;
+                border-left-color: transparent !important;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-btn {
+                width: 200px;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            .section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+
+            .photo-gallery {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .header {
+                padding: 40px 0;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+            }
+        }
+
+        /* 平板設備優化 */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .photo-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .timeline-item {
+                width: 40%;
+            }
+
+            .timeline-item:nth-child(even) {
+                left: 60%;
+            }
+        }
+
+        /* 大螢幕優化 */
+        @media (min-width: 1025px) {
+            .photo-gallery {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        .photo-item {
+    transition: transform 0.4s cubic-bezier(.4,2,.6,1), box-shadow 0.4s;
+}
+.photo-item:hover {
+    transform: scale(1.2); /* 框架放大 */
+    z-index: 3;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+}
+
+.photo-item img {
+    transition: transform 0.4s cubic-bezier(.4,2,.6,1), object-fit 0.4s;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #fff;
+}
+
+.photo-item:hover img {
+    object-fit: contain;      /* 顯示完整圖片 */
+    transform: scale(1.1);   /* 圖片再放大一點（可調整） */
+    background: #fff;
+}
+.avatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 75%; /* 讓圖片變成圓形 */
+  object-fit: cover;  /* 保持圖片不變形，超出部分會裁切 */
+  margin-top: 20px;
+  
+}
+    </style>
+</head>
+<body>
+    <!-- 登入頁面 -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-card">
+            <h1 class="login-title">🎂 生日回憶錄</h1>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="userName">請輸入您的姓名：</label>
+                    <input type="text" id="userName" required placeholder="例如：小明">
+                </div>
+                <div class="form-group">
+                    <label for="userBirthday">請輸入您的生日（MMDD）：</label>
+                    <input type="text" id="userBirthday" required placeholder="例如：0229" maxlength="4" pattern="[0-9]{4}">
+                </div>
+                <button type="submit" class="login-btn">進入我的回憶錄</button>
+                <div class="error-message" id="errorMessage">姓名或生日不正確，請重新輸入</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 主網站 -->
+    <div class="main-website" id="mainWebsite">
+        <div class="floating-hearts" id="hearts"></div>
+        
+        <!-- 導航欄 -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">🎂 生日回憶錄</div>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#home" class="nav-link active" data-page="home">首頁</a></li>
+                    <li><a href="#photos" class="nav-link" data-page="photos">照片回憶</a></li>
+                    <li><a href="#timeline" class="nav-link" data-page="timeline">時光軸</a></li>
+                    <li><a href="#wishes" class="nav-link" data-page="wishes">生日祝福</a></li>
+                </ul>
+                <div class="user-info">
+                    <span class="user-name" id="userNameDisplay"></span>
+                    <button class="logout-btn" id="logoutBtn">登出</button>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+            </div>
+        </nav>
+
+        <!-- 頁面容器 -->
+        <div class="page-container">
+            <!-- 首頁 -->
+            <div class="page active" id="home">
+                <div class="container">
+                    <div class="header">
+                        <h1>🎉 生日快樂 <span id="userNameHeader"></span> 🎉</h1>
+                        <p>獻給最特別的你 - 我們的珍貴回憶</p>
+                        <div id="daysCounter" style="margin: 20px 0; font-size: 1.2rem; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);"></div>
+                        <div class="cta-buttons">
+                            <a href="#photos" class="cta-btn nav-link" data-page="photos"><span id="userNamePhotos"></span>的照片回憶</a>
+                            <a href="#timeline" class="cta-btn nav-link" data-page="timeline"><span id="userNameTimeline"></span>的時光軸</a>
+                            <a href="#wishes" class="cta-btn nav-link" data-page="wishes"><span id="userNameWishes"></span>的生日祝福</a>
+                        </div>
+                    </div>
+
+                    <div class="section"id="photos1">
+                        
+                        <h2 class="section-title">💝 歡迎來到你的生日回憶錄</h2>
+                        <div style="text-align: center; font-size: 1.2rem; line-height: 1.8;">
+                            <p>親愛的 <span id="userNameWelcome"></span>，雖然沒有準時給妳，但我還是覺得這份禮物很值得。</p>
+                            <p>這裡記錄著我們一起走過的點點滴滴，每一個瞬間都值得珍藏。</p>
+                            <img src="memories/小哈.jpg" class="avatar" width="100" height="100">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 照片回憶頁面 -->
+            <div class="page" id="photos">
+                <div class="container">
+                    <div class="section">
+                        <h2 class="section-title">📸 <span id="userNameBirthday"></span> 的美好時光</h2>
+                        <div class="photo-gallery">
+                            <div class="photo-item">
+                                <img src="memories/2023.0204.jpg" alt="第一次員工聚餐" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    第一次吃飯居然是員工聚餐</br>
+                                    開始了這段友誼
+                                </div>
+                            </div>
+                            <div class="photo-item">
+                                <img src="memories/2023.0208.jpg" alt="第一次吃飯ㄡ" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    第一次吃飯ㄡ</br>
+                                    根本沒想過你會赴約
+                                </div>
+                            </div>
+                            <div class="photo-item">
+                                <img src="memories/2023.0210.jpg" alt="慶祝重要時刻的歡樂時光" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    謝謝妳的30元讓我可以回家QQ
+                                </div>
+                            </div>
+                            <div class="photo-item">
+                                <img src="memories/2023.0213.jpg" alt="日常生活中的小確幸" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    這是我最後幾次上班</br>
+                                    順便載妳回家</br>
+                                    (其實也沒那麼順便)
+                                </div>
+                            </div>
+                            <div class="photo-item">
+                                <img src="memories/2023.0830.jpg" alt="一起度過的每個節日" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    第一次護送公主回家</br>
+                                    小哈這時候在副駕
+                                </div>
+                            </div>
+                            <div class="photo-item">
+                                <img src="memories/2024.0118.jpg" alt="最珍貴的友誼時刻" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    直接上台北護送公主
+                                </div>
+                            </div> 
+                            <div class="photo-item">
+                                <img src="memories/2024.0618.jpg" alt="最珍貴的友誼時刻" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    紀念去台中找劉浩宇
+                                </div>
+                            </div>
+                            <div class="photo-item">
+                                <img src="memories/2024.0618-1.jpg" alt="最珍貴的友誼時刻" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    最愛搞怪的人
+                                </div>
+                            </div>
+                            <div class="photo-item">
+                                <img src="memories/2024.0701-1.jpg" alt="最珍貴的友誼時刻" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    哈根達斯❤️❤️
+                                </div>
+                            </div>
+                            <div class="photo-item">
+                                <img src="memories/2024.0715.jpg" alt="最珍貴的友誼時刻" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    江江請屋馬(那小倪呢><)
+                                </div>
+                            </div>
+                            <div class="photo-item">
+                                <img src="memories/2024.0715-1.jpg" alt="最珍貴的友誼時刻" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    是誰這麼虔誠呀
+                                </div>
+                            </div>
+                            <div class="photo-item">
+                                 <img src="memories/2025.0201.png" alt="最珍貴的友誼時刻" style="width:100%;height:100%;object-fit:cover;">
+                                 <div class="photo-caption">
+                                    小倪又來回來新竹上班嚕
+                                 </div>
+                            </div>
+                            <div class="photo-item">
+                                <img src="memories/2025.0714.jpg" alt="最珍貴的友誼時刻" style="width:100%;height:100%;object-fit:cover;">
+                                <div class="photo-caption">
+                                    LV香水！！！             
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 時光軸頁面 -->
+            <div class="page" id="timeline">
+                <div class="container">
+                    <div class="section">
+                        <h2 class="section-title">⏰與 <span id="userNameBirthday1"></span> 的時光軸</h2>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <div class="timeline-date">2023年2月4日</div>
+                                    <p>
+                                        有人突然問我</br>
+                                        ：欸，你叫江鮭魚嗎?</br>
+                                        我一時間反應不過來只好</br>
+                                        「蛤?痾?對啊，你怎麼知道?」</br>
+                                        說真的我有點慌，也有點好奇。</br>
+                                        她怎麼知道的?</br>
+                                        為什麼會突然問這個?</br>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <div class="timeline-date">2023年2月6日</div>
+                                    <p>
+                                        我突然問</br>
+                                        「你吃過森森燒肉嗎？」</br>
+                                        她說：沒有欸。</br>
+                                        然後我說 「要不要去吃？」</br>
+                                        就這樣隨口一問，約到了。</br>
+                                        沒人知道的是...</br>
+                                        我很抖很緊張哈哈哈。</br>
+                                        我們的第一次吃飯</br>
+                                        也是第一次吃森森燒肉。</br>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <div class="timeline-date">2023年8月9日</div>
+                                    <p>
+                                        我還記得那天，我正在洗澡。</br>
+                                        匆匆拿起來，是她的來電。</br>
+                                        「你有空嗎？」</br>
+                                        「你可以來桃園載我嗎……</br>
+                                        我出車禍了。」她啜泣的說。</br>
+                                        我整個人愣住。</br>
+                                        那一瞬間腦子什麼都想不到。</br> 
+                                        我連頭髮都沒吹</br>
+                                        身子半濕就衝出門。</br>
+                                        趕去桃園的路上</br>
+                                        一邊開車腦中閃過各種畫面。</br>
+                                        我只想快點看到她</br>
+                                        心想：她還好嗎？</br>
+                                        摁。從沒想過，她會打給我。</br>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <div class="timeline-date">2024年7月15日</div>
+                                    <p> 今天是一個很特別的日子</br>
+                                        充滿儀式感和慶祝的味道。</br>
+                                        早上我們一起去拿我的畢業證書</br>
+                                        那一刻好像真的把學生時代畫上了句點</br>
+                                        雖然我的大學生活來不及參與</br>
+                                        但陪我一起迎接大學的終點，感覺特別開心。</br>
+                                        中午我們去邦邦小姐吃泰式甜點。</br>
+                                        點了一碗摩摩喳喳，椰奶冰涼濃郁</br>
+                                        各種配料色彩繽紛、口感層次豐富</br>
+                                        吃起來不只清涼</br>
+                                        還有種在夏天裡被溫柔擁抱的感覺。</br>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-content">
+                                    <div class="timeline-date">未完待續……</div>
+                                    <p>未完待續……</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 生日祝福頁面 -->
+            <div class="page" id="wishes">
+                <div class="container">
+                    <div class="section">
+                        <h2 class="section-title">💝 我想對<span id="userNameBirthday2"></span> 說</h2>
+                        <div style="line-height: 1.8; font-size: 1.1rem; text-align: center; ">
+                            <p>親愛的 <span id="userNameWishesText"></span></p>
+                            <p>在這個特別的日子裡，我想告訴你</br>
+                                有你的每一天都是珍貴的禮物</br>
+                                有妳這個朋友是我最珍貴的財富ㄡ</br>
+                                謝謝你一直以來的支持、理解和包容</br>
+                                謝謝你在我需要的時候給予溫暖的擁抱</br>
+                                謝謝你分享我的快樂，也分擔我的煩惱</br>
+                            </p>
+                            <p>願你的生日充滿歡笑和愛</br>
+                                願你的未來閃耀著無限的可能</br>
+                                我會一直在後面默默的看著你</br>
+                                見證你的每一個精彩時刻</br>
+                                算了我還是大聲的看妳發光發熱</br>
+                                這樣妳才不會忘記我哈哈哈</br>
+                                生日快樂！</br>
+                                願你永遠快樂、健康、美麗外</br>
+                                還要賺大錢！</br>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="birthday-wish">
+                        <h2>🎂 <span id="userNameBirthday3"></span> 生日快樂 🎂</h2>
+                        <p>願你的生日如你一樣特別而美好</p>
+                        <p>願你的笑容永遠如陽光般燦爛</p>
+                        <p>願你的夢想都能實現</p>
+                        <p>願我們的友誼長存 <span class="heart">❤️</span></p>
+                    </div>
+                    <div class="birthday-wish"class="photo-item">
+                        <img src="memories/QRcode.jpg" style="width:100%;height:100%;object-fit:cover;">
+                        <p> 這是妳的生日禮物我一直都放在我這邊</br>
+                            (不是你送的那張！！！)</br>
+                            妳應該知道要跟誰去吃了吧！</br>
+                            妳想先用可以直接拿這張圖片掃哈哈哈</br>  
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 用戶數據（實際應用中可以存儲在數據庫中）
+        const users = {
+            '小倪': { birthday: '0715', name: '小倪' },
+
+        };
+
+        let currentUser = null;
+
+        // 檢查是否已登入
+        function checkLogin() {
+            const savedUser = localStorage.getItem('birthdayUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainWebsite();
+                updateUserInterface();
+            }
+        }
+
+        // 登入處理
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userName = document.getElementById('userName').value.trim();
+            const userBirthday = document.getElementById('userBirthday').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // 驗證用戶
+            if (users[userName] && users[userName].birthday === userBirthday) {
+                currentUser = users[userName];
+                localStorage.setItem('birthdayUser', JSON.stringify(currentUser));
+                showMainWebsite();
+                updateUserInterface();
+                errorMessage.style.display = 'none';
+            } else {
+                errorMessage.style.display = 'block';
+                // 清空輸入框
+                document.getElementById('userName').value = '';
+                document.getElementById('userBirthday').value = '';
+            }
+        });
+
+        // 顯示主網站
+        function showMainWebsite() {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('mainWebsite').classList.add('active');
+        }
+
+        // 更新用戶介面
+        function updateUserInterface() {
+            if (!currentUser) return;
+            
+            // 更新所有顯示用戶名的地方
+            const userNameElements = [
+                'userNameDisplay',
+                'userNameHeader', 
+                'userNameWelcome',
+                'userNamePhotos',
+                'userNameTimeline',
+                'userNameWishes',
+                'userNameWishesText',
+                'userNameBirthday',
+                'userNameBirthday1',
+                'userNameBirthday2',
+                'userNameBirthday3',
+            ];
+            
+            userNameElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.textContent = currentUser.name;
+                }
+            });
+        }
+
+        // 登出功能
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            localStorage.removeItem('birthdayUser');
+            currentUser = null;
+            document.getElementById('mainWebsite').classList.remove('active');
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('loginForm').reset();
+            document.getElementById('errorMessage').style.display = 'none';
+        });
+
+        // 分頁功能
+        function showPage(pageId) {
+            // 隱藏所有頁面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 顯示選中的頁面
+            document.getElementById(pageId).classList.add('active');
+            
+            // 更新導航連結狀態
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // 激活對應的導航連結
+            document.querySelector(`[data-page="${pageId}"]`).classList.add('active');
+        }
+
+        // 導航連結點擊事件
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                showPage(pageId);
+                
+                // 在移動端關閉選單
+                if (window.innerWidth <= 768) {
+                    document.getElementById('navMenu').classList.remove('active');
+                }
+            });
+        });
+
+        // 移動端選單切換
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('navMenu').classList.toggle('active');
+        });
+
+        // 創建飄浮愛心效果
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            document.getElementById('hearts').appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }
+
+        // 每500毫秒創建一個愛心
+        setInterval(createHeart, 500);
+
+        // 照片上傳功能
+        // document.querySelectorAll('.photo-placeholder').forEach(placeholder => {
+        //     placeholder.addEventListener('click', function() {
+        //         const input = document.createElement('input');
+        //         input.type = 'file';
+        //         input.accept = 'image/*';
+        //         input.onchange = function(e) {
+        //             const file = e.target.files[0];
+        //             if (file) {
+        //                 const reader = new FileReader();
+        //                 reader.onload = function(e) {
+        //                     placeholder.style.backgroundImage = `url(${e.target.result})`;
+        //                     placeholder.style.backgroundSize = 'cover';
+        //                     placeholder.style.backgroundPosition = 'center';
+        //                     placeholder.innerHTML = '';
+        //                 };
+        //                 reader.readAsDataURL(file);
+        //             }
+        //         };
+        //         input.click();
+        //     });
+        // });
+
+        // 響應式處理
+        function handleResize() {
+            if (window.innerWidth > 768) {
+                document.getElementById('navMenu').classList.remove('active');
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        // 平滑滾動到頂部
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 頁面切換時滾動到頂部
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', scrollToTop);
+        });
+
+        // 頁面載入時檢查登入狀態
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLogin();
+            // 計算認識天數
+            const startDate = new Date(2023, 1, 4); // 月份從0開始，1代表2月
+            const today = new Date();
+            // 清除時分秒，避免誤差
+            startDate.setHours(0,0,0,0);
+            today.setHours(0,0,0,0);
+            const diffTime = today - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            const daysCounter = document.getElementById('daysCounter');
+            if (daysCounter) {
+                daysCounter.textContent = `我們已經認識第 ${diffDays + 1} 天啦！`;
+            }
+        });
+    </script>
+</body>
+</html> 
